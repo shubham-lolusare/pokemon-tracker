@@ -1,12 +1,15 @@
 // importing link from react router
-import { Link } from "react-router-dom";
+import { Link, useNavigation } from "react-router-dom";
 
 // importing various a=images according to the isze of the device
 import desktopBG from "../../assets/desktopModeWallpaper.jpeg";
 import mobileBG from "../../assets/mobileModeWallpaper.jpg";
 import tabletBG from "../../assets/tabletModeWallpaper.jpg";
+import LoadingPage from "../LoadingPage/LoadingPage";
 
 export default function HomePage() {
+  let navigation = useNavigation();
+
   return (
     <main className="relative h-screen w-screen">
       {/* this component will display the image according to the device width */}
@@ -44,6 +47,8 @@ export default function HomePage() {
           Go to Dashboard
         </Link>
       </div>
+
+      {navigation.state === "loading" && <LoadingPage />}
     </main>
   );
 }

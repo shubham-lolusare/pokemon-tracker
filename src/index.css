@@ -3,3 +3,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* width*/
+.scrollBar::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.scrollBar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+}
+
+/* Handle */
+.scrollBar::-webkit-scrollbar-thumb {
+  background: #1f2937;
+}
+
+/* Handle on hover */
+.scrollBar::-webkit-scrollbar-thumb:hover {
+  background: #1f2937;
+}
+
+.scrollBar {
+  scrollbar-width: thin;
+}
