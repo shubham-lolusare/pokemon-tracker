@@ -16,10 +16,18 @@ let pokemonSlice = createSlice({
         return item.id != action.payload;
       });
     },
+    editPokemon: (state, action) => {
+      state.map((item) => {
+        if (item.id == action.payload.id) {
+          item.details = action.payload.details;
+        }
+      });
+    },
   },
 });
 
-export const { loadPokemon, addPokemon, removePokemon } = pokemonSlice.actions;
+export const { loadPokemon, addPokemon, removePokemon, editPokemon } =
+  pokemonSlice.actions;
 
 export default pokemonSlice.reducer;
 

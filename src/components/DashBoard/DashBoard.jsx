@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigation } from "react-router-dom";
+import { Link, useLoaderData, useNavigation } from "react-router-dom";
 import LoadingPage from "../LoadingPage/LoadingPage";
 
 import desktopBG from "../../assets/dashboardDesktopWallpaper.jpg";
@@ -68,7 +68,10 @@ export default function DashBoard() {
       </section>
 
       <section className="relative w-full h-full bg-gray-100/90 p-4 flex flex-col gap-4 xs:p-2">
-        <h1 className="text-6xl font-bold text-gray-800 flex justify-center items-center gap-[8vw] sm:gap-10 mobile:flex-col mobile:gap-2 mobile:text-4xl xs:text-2xl">
+        <Link
+          to="/"
+          className="text-6xl font-bold text-gray-800 flex justify-center items-center gap-[8vw] sm:gap-10 mobile:flex-col mobile:gap-2 mobile:text-4xl xs:text-2xl"
+        >
           {"POKEMON TRACKER".split(" ").map((word, index) => (
             <div
               className="w-full flex justify-between items-center"
@@ -79,7 +82,7 @@ export default function DashBoard() {
               ))}
             </div>
           ))}
-        </h1>
+        </Link>
 
         <section className="w-[900px] self-center flex-1 flex flex-col gap-4 sm:w-full overflow-hidden">
           <h1 className="text-center text-3xl font-bold xs:text-lg">
@@ -92,15 +95,16 @@ export default function DashBoard() {
               })}
             </section>
           ) : (
-            <p className="text-center">No pokemons added</p>
+            <p className="text-center">No pokemons present</p>
           )}
         </section>
 
         <button
-          className="absolute bottom-12 right-12 text-2xl bg-gray-800 text-yellow-50 p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
+          className="fixed bottom-12 right-12 tall:bottom-4 tall:right-4 sm:bottom-0 sm:left-[-5px] sm:right-[-5px] sm:rounded-none sm:p-2 sm:flex sm:justify-center sm:items-center bg-gray-800 text-white p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
           onClick={() => dispatch(addModal(true))}
         >
-          <FaPlus className="bg-transparent" />
+          <FaPlus className="sm:hidden" />
+          <span className="hidden sm:block">Add your Pokemon</span>
         </button>
       </section>
 

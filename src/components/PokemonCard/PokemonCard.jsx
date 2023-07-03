@@ -2,15 +2,38 @@
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import DeletePokemonModal from "../DeletePokemonModal/DeletePokemonModal";
-import { deleteModal } from "../../slices/modalDisplayStatusSlice";
+
+import { removePokemon } from "../../slices/pokemonListSlice";
+
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
+
+import { toast } from "react-toastify";
+import { setStatus, statusSelector } from "../../slices/loadingSlice";
+import LoadingPage from "../LoadingPage/LoadingPage";
 
 export default function PokemonCard({ pokemon }) {
   let dispatch = useDispatch();
 
-  let deleteModalStatus = useSelector(
-    (state) => state.modalDisplayStatus.deleteModal
-  );
+  let status = useSelector(statusSelector);
+
+  function handleDeletePokemon() {
+    dispatch(setStatus("loading"));
+    dispatch(removePokemon(pokemon.id));
+    deleteDoc(doc(db, "pokemons", pokemon.id)).then(() => {
+      dispatch(setStatus(""));
+      toast.success("Pokemon deleted", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    });
+  }
 
   return (
     <>
@@ -31,7 +54,7 @@ export default function PokemonCard({ pokemon }) {
                 More Details
               </Link>
               <MdDelete
-                onClick={() => dispatch(deleteModal(true))}
+                onClick={handleDeletePokemon}
                 className="text-2xl hover:outline hover:outline-8 hover:outline-offset-[-1px] hover:outline-gray-100 hover:rounded-full hover:bg-gray-100 hover:text-black"
               />
             </div>
@@ -39,7 +62,7 @@ export default function PokemonCard({ pokemon }) {
         </div>
       </article>
 
-      {deleteModalStatus && <DeletePokemonModal pokemon={pokemon} />}
+      {status === "loading" && <LoadingPage />}
     </>
   );
 }

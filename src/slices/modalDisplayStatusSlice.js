@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 let initialState = {
   addModal: false,
-  deleteModal: false,
+  editModal: false,
 };
 
 let modalDisplayState = createSlice({
@@ -12,12 +12,12 @@ let modalDisplayState = createSlice({
     addModal: (state, action) => {
       state.addModal = action.payload;
     },
-    deleteModal: (state, action) => {
-      state.deleteModal = action.payload;
+    editModal: (state, action) => {
+      state.editModal = action.payload;
     },
   },
 });
 
-export const { addModal, deleteModal } = modalDisplayState.actions;
+export const { addModal, editModal } = modalDisplayState.actions;
 
 export default modalDisplayState.reducer;
