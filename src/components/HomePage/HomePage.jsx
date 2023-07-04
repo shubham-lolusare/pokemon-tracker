@@ -48,6 +48,7 @@ export default function HomePage() {
         </Link>
       </div>
 
+      {/* conditionally rendering the loading page */}
       {navigation.state === "loading" && <LoadingPage />}
     </main>
   );

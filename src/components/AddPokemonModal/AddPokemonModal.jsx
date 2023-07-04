@@ -1,20 +1,36 @@
+/**
+ * This modal is used to add the pokemon
+ */
+
+// importing icons
 import { GrFormClose } from "react-icons/gr";
+
+// importing hooks
 import { useDispatch, useSelector } from "react-redux";
-import { addModal } from "../../slices/modalDisplayStatusSlice";
 import { useState } from "react";
 
-import { storage, db } from "../../../firebaseConfig";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+// importing action creators from slices
+import { addModal } from "../../slices/modalDisplayStatusSlice";
 import { setStatus, statusSelector } from "../../slices/loadingSlice";
-import LoadingPage from "../LoadingPage/LoadingPage";
-import { toast } from "react-toastify";
-import { addDoc, collection } from "firebase/firestore";
 import { addPokemon } from "../../slices/pokemonListSlice";
 
+// importing firebase related methods
+import { storage, db } from "../../../firebaseConfig";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+
+import { toast } from "react-toastify";
+
+// importing components
+import LoadingPage from "../LoadingPage/LoadingPage";
+
 export default function AddPokemonModal() {
+  // Accessing store state for loading status
   let status = useSelector(statusSelector);
+
   let dispatch = useDispatch();
 
+  // states for form inputs
   let [name, setName] = useState("");
   let [desc, setDesc] = useState("");
   let [image, setImage] = useState(null);
@@ -25,8 +41,10 @@ export default function AddPokemonModal() {
   let [abilities, setAbilities] = useState("");
   let [weakness, setWeakness] = useState("");
 
+  // this function will add the pokemon to redux store as well as firestore database
   function handleAddPokemon(e) {
     e.preventDefault();
+
     dispatch(setStatus("loading"));
 
     if (image != null) {
@@ -35,6 +53,7 @@ export default function AddPokemonModal() {
         .then(() => {
           getDownloadURL(imageRef)
             .then((url) => {
+              // adding collection
               addDoc(collection(db, "pokemons"), {
                 name: name,
                 desc: desc,
@@ -153,6 +172,7 @@ export default function AddPokemonModal() {
           {/* </button> */}
         </div>
 
+        {/* add pokemon form */}
         <form
           className="scrollBar flex-1 flex flex-col gap-4 overflow-y-scroll pr-2"
           onSubmit={handleAddPokemon}
@@ -287,16 +307,21 @@ export default function AddPokemonModal() {
             <label htmlFor="pokemonGender" className="text-lg font-bold">
               Gender<span className="text-red-800">*</span>
             </label>
-            <input
+            <select
               type="text"
               id="pokemonGender"
               name="pokemonGender"
-              className="w-full p-2 pl-2 pr-2 border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800"
+              className="scrollBar w-full p-2 pl-2 pr-2 border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800"
               required
-              placeholder="Your Pokemon Gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-            />
+            >
+              <option value="" disabled>
+                Your Pokemon Gender
+              </option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
 
           {/* abilities */}
@@ -333,6 +358,7 @@ export default function AddPokemonModal() {
             />
           </div>
 
+          {/* submit button */}
           <input
             type="submit"
             value="Add my pokemon"
@@ -341,6 +367,7 @@ export default function AddPokemonModal() {
         </form>
       </section>
 
+      {/* conditionally rendering the loading page */}
       {status === "loading" && <LoadingPage />}
     </main>
   );

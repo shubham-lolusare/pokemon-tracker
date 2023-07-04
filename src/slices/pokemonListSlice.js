@@ -1,3 +1,8 @@
+/**
+ * This slice is used to store the pokemon data
+ * This slice enalesto perform all the CRUD operation on storestate
+ */
+
 import { createSlice } from "@reduxjs/toolkit";
 let initialState = [];
 
@@ -26,11 +31,14 @@ let pokemonSlice = createSlice({
   },
 });
 
+// exporting action creators
 export const { loadPokemon, addPokemon, removePokemon, editPokemon } =
   pokemonSlice.actions;
 
+// exporting reducer
 export default pokemonSlice.reducer;
 
+// exporting selector function
 export function pokemonListSelector(state) {
   return state.pokemonList;
 }

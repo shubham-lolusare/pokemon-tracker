@@ -1,38 +1,51 @@
-import { Link, useLoaderData, useNavigation } from "react-router-dom";
-import LoadingPage from "../LoadingPage/LoadingPage";
+/**
+ * This component is used to display all the pokemons that are added
+ */
 
+// importing hooks
+import { Link, useLoaderData, useNavigation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
+// mporting components
+import LoadingPage from "../LoadingPage/LoadingPage";
+import AddPokemonModal from "../AddPokemonModal/AddPokemonModal";
+import PokemonCard from "../PokemonCard/PokemonCard";
+
+// importing images
 import desktopBG from "../../assets/dashboardDesktopWallpaper.jpg";
 import mobileBG from "../../assets/dashboardMobileWallpaper.jpg";
 import tabletBG from "../../assets/dashboardTabletWallpaper.jpg";
 
+// importing icons
 import { FaPlus } from "react-icons/fa";
-import AddPokemonModal from "../AddPokemonModal/AddPokemonModal";
-import { useDispatch, useSelector } from "react-redux";
-import { addModal } from "../../slices/modalDisplayStatusSlice";
 
+// importing action creators
+import { addModal } from "../../slices/modalDisplayStatusSlice";
 import {
   loadPokemon,
   pokemonListSelector,
 } from "../../slices/pokemonListSlice";
-import { useEffect } from "react";
-import PokemonCard from "../PokemonCard/PokemonCard";
 
+// importing firebase related methods
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 
+// loader function which loads pokemon data on routing
 export async function dashBoardDataLoader() {
   let arr = [];
   const querySnapshot = await getDocs(collection(db, "pokemons"));
   querySnapshot.forEach((doc) => {
     arr.push({ id: doc.id, details: doc.data() });
   });
-  // console.log("loader");
   return arr;
 }
 
 export default function DashBoard() {
   let navigation = useNavigation();
+
   let dispatch = useDispatch();
+
   let pokemonLoaderData = useLoaderData();
 
   let pokemonList = useSelector(pokemonListSelector);
@@ -67,6 +80,7 @@ export default function DashBoard() {
         </picture>
       </section>
 
+      {/* heading */}
       <section className="relative w-full h-full bg-gray-100/90 p-4 flex flex-col gap-4 xs:p-2">
         <Link
           to="/"
@@ -84,10 +98,12 @@ export default function DashBoard() {
           ))}
         </Link>
 
-        <section className="w-[900px] self-center flex-1 flex flex-col gap-4 sm:w-full overflow-hidden">
+        <section className="w-[900px] self-center flex-1 flex flex-col gap-4 sm:w-full overflow-hidden sm:mb-14 ">
           <h1 className="text-center text-3xl font-bold xs:text-lg">
             My Pokemons
           </h1>
+
+          {/* pokemon cards */}
           {pokemonList.length != 0 ? (
             <section className="overflow-y-scroll scrollBar pr-2 flex flex-wrap gap-4 sm:justify-center ">
               {pokemonList.map((pokemon) => {
@@ -99,8 +115,9 @@ export default function DashBoard() {
           )}
         </section>
 
+        {/* Add modal button */}
         <button
-          className="fixed bottom-12 right-12 tall:bottom-4 tall:right-4 sm:bottom-0 sm:left-[-5px] sm:right-[-5px] sm:rounded-none sm:p-2 sm:flex sm:justify-center sm:items-center bg-gray-800 text-white p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
+          className="fixed bottom-12 right-12 tall:bottom-4 tall:right-4 sm:bottom-0 sm:left-[-5px] sm:right-[-5px] sm:rounded-none sm:h-12 sm:flex sm:justify-center sm:items-center bg-gray-800 text-white p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
           onClick={() => dispatch(addModal(true))}
         >
           <FaPlus className="sm:hidden" />
@@ -108,8 +125,10 @@ export default function DashBoard() {
         </button>
       </section>
 
+      {/* conditionally rendering the loading page */}
       {navigation.state === "loading" && <LoadingPage />}
 
+      {/* conditionally rendering the Add pokemon modal */}
       {addModalStatus && <AddPokemonModal />}
     </main>
   );

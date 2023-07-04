@@ -1,3 +1,7 @@
+/**
+ * This slicse keeps the track of the loading status
+ * The status may be the network fectiong or route loading
+ */
 import { createSlice } from "@reduxjs/toolkit";
 
 let status = createSlice({
@@ -12,10 +16,13 @@ let status = createSlice({
   },
 });
 
+// exporting action creators
 export const { setStatus } = status.actions;
 
+// exporting reducer
 export default status.reducer;
 
+// exporting selector function
 export const statusSelector = (state) => {
   return state.status.value;
 };

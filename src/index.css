@@ -1,9 +1,11 @@
+/* importing css for toast notification */
 @import url("react-toastify/dist/ReactToastify.css");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* scrollbar styling */
 /* width*/
 .scrollBar::-webkit-scrollbar {
   width: 7px;

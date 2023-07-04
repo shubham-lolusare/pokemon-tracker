@@ -1,27 +1,40 @@
 /* eslint-disable react/prop-types */
+/**
+ * This component is used to display the modal for editing pokemon details
+ */
+// importing icons
 import { GrFormClose } from "react-icons/gr";
+
+// importing hooks
 import { useDispatch, useSelector } from "react-redux";
-import { editModal } from "../../slices/modalDisplayStatusSlice";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+// importing action creators
+import { editModal } from "../../slices/modalDisplayStatusSlice";
 import { statusSelector } from "../../slices/loadingSlice";
+import { editPokemon } from "../../slices/pokemonListSlice";
+
+// importing components
 import LoadingPage from "../LoadingPage/LoadingPage";
 
-import { storage, db } from "../../../firebaseConfig";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+// importing firebase related methods
+import { db } from "../../../firebaseConfig";
 import { setStatus } from "../../slices/loadingSlice";
-import { toast } from "react-toastify";
 import { doc, setDoc } from "firebase/firestore";
-import { editPokemon } from "../../slices/pokemonListSlice";
-import { useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
 
 export default function EditPokemonModal({ pokemon }) {
   let dispatch = useDispatch();
+
   let navigate = useNavigate();
+
   let status = useSelector(statusSelector);
 
+  // state for form input
   let [name, setName] = useState(pokemon.details.name);
   let [desc, setDesc] = useState(pokemon.details.desc);
-  let [image, setImage] = useState(null);
   let [category, setCategory] = useState(pokemon.details.category);
   let [height, setHeight] = useState(pokemon.details.height);
   let [weight, setWeight] = useState(pokemon.details.weight);
@@ -31,119 +44,68 @@ export default function EditPokemonModal({ pokemon }) {
   );
   let [weakness, setWeakness] = useState(pokemon.details.weakness.join(", "));
 
+  // this function will edit the pokemon details in redux store as well as firestore database
   function handleEditPokemon(e) {
     e.preventDefault();
+
     dispatch(setStatus("loading"));
 
-    if (image != null) {
-      const imageRef = ref(storage, name);
-      uploadBytes(imageRef, image)
-        .then(() => {
-          getDownloadURL(imageRef)
-            .then((url) => {
-              setDoc(doc(db, "pokemons", pokemon.id), {
-                name: name,
-                desc: desc,
-                image: url,
-                category: category,
-                height: height,
-                weight: weight,
-                gender: gender,
-                abilities: abilities.split(",").map((word) => word.trim()),
-                weakness: weakness.split(",").map((word) => word.trim()),
-              })
-                .then(() => {
-                  dispatch(
-                    editPokemon({
-                      id: pokemon.id,
-                      details: {
-                        name: name,
-                        desc: desc,
-                        image: url,
-                        category: category,
-                        height: height,
-                        weight: weight,
-                        gender: gender,
-                        abilities: abilities
-                          .split(",")
-                          .map((word) => word.trim()),
-                        weakness: weakness
-                          .split(",")
-                          .map((word) => word.trim()),
-                      },
-                    })
-                  );
-                  dispatch(setStatus("idle"));
-                  dispatch(editModal(false));
-                  toast.success("Pokemon modified", {
-                    position: "top-right",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                  });
-                  navigate("/dashboard");
-                })
-                // catch block for addDoc
-                .catch((error) => {
-                  dispatch(setStatus("idle"));
-                  toast.error(error.message, {
-                    position: "top-right",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                  });
-                });
-            })
-            // catch block for getDownloadurl function
-            .catch((error) => {
-              dispatch(setStatus("idle"));
-              toast.error(error.message, {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-            });
-        })
-        // catch block for uploadBytes function
-        .catch((error) => {
-          dispatch(setStatus("idle"));
-          toast.error(error.message, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
+    setDoc(doc(db, "pokemons", pokemon.id), {
+      name: name,
+      desc: desc,
+      image: pokemon.details.image,
+      category: category,
+      height: height,
+      weight: weight,
+      gender: gender,
+      abilities: abilities.split(",").map((word) => word.trim()),
+      weakness: weakness.split(",").map((word) => word.trim()),
+    })
+      .then(() => {
+        dispatch(
+          editPokemon({
+            id: pokemon.id,
+            details: {
+              name: name,
+              desc: desc,
+              image: pokemon.details.image,
+              category: category,
+              height: height,
+              weight: weight,
+              gender: gender,
+              abilities: abilities.split(",").map((word) => word.trim()),
+              weakness: weakness.split(",").map((word) => word.trim()),
+            },
+          })
+        );
+        dispatch(setStatus("idle"));
+        dispatch(editModal(false));
+        toast.success("Pokemon modified", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
         });
-    } else {
-      dispatch(setStatus("idle"));
-      toast.error("Please select a valid image file", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
+        navigate("/dashboard");
+      })
+      // catch block for setDoc
+      .catch((error) => {
+        dispatch(setStatus("idle"));
+        toast.error(error.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
-    }
   }
 
   return (
@@ -160,6 +122,7 @@ export default function EditPokemonModal({ pokemon }) {
           {/* </button> */}
         </div>
 
+        {/* form to edit pokemon details */}
         <form
           className="scrollBar flex-1 flex flex-col gap-4 overflow-y-scroll pr-2"
           onSubmit={handleEditPokemon}
@@ -195,25 +158,6 @@ export default function EditPokemonModal({ pokemon }) {
               placeholder="You Pokemon Description"
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-            />
-          </div>
-
-          {/* image */}
-          <div className="w-full">
-            <label htmlFor="pokemonImage" className="text-lg font-bold">
-              Image<span className="text-red-800">*</span>
-            </label>
-            <input
-              id="pokemonImage"
-              name="pokemonImage"
-              className="w-full border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800 file:bg-gray-800 file:outline-0 file:text-white file:cursor-pointer cursor-pointer file:border-0 file:p-2 "
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                if (e.target.files[0]) {
-                  setImage(e.target.files[0]);
-                }
-              }}
             />
           </div>
 
@@ -294,16 +238,21 @@ export default function EditPokemonModal({ pokemon }) {
             <label htmlFor="pokemonGender" className="text-lg font-bold">
               Gender<span className="text-red-800">*</span>
             </label>
-            <input
+            <select
               type="text"
               id="pokemonGender"
               name="pokemonGender"
-              className="w-full p-2 pl-2 pr-2 border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800"
+              className="scrollBar w-full p-2 pl-2 pr-2 border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800"
               required
-              placeholder="Your Pokemon Gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-            />
+            >
+              <option value="" disabled>
+                Your Pokemon Gender
+              </option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
 
           {/* abilities */}
@@ -340,6 +289,7 @@ export default function EditPokemonModal({ pokemon }) {
             />
           </div>
 
+          {/* submit button */}
           <input
             type="submit"
             value="Save my pokemon"
@@ -348,6 +298,7 @@ export default function EditPokemonModal({ pokemon }) {
         </form>
       </section>
 
+      {/* conditionally rendering the loading page */}
       {status === "loading" && <LoadingPage />}
     </main>
   );
