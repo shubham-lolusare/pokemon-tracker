@@ -117,7 +117,7 @@ export default function DashBoard() {
 
         {/* Add modal button */}
         <button
-          className="fixed bottom-12 right-12 tall:bottom-4 tall:right-4 sm:bottom-0 sm:left-[-5px] sm:right-[-5px] sm:rounded-none sm:h-12 sm:flex sm:justify-center sm:items-center bg-gray-800 text-white p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
+          className="fixed bottom-12 right-12 sm:bottom-0 sm:left-[-5px] sm:right-[-5px] sm:rounded-none sm:h-12 sm:flex sm:justify-center sm:items-center bg-gray-800 text-white p-4 rounded-full hover:outline hover:outline-8 hover:outline-offset-0 hover:outline-gray-300"
           onClick={() => dispatch(addModal(true))}
         >
           <FaPlus className="sm:hidden" />
