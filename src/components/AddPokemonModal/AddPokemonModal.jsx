@@ -279,7 +279,7 @@ export default function AddPokemonModal() {
               name="pokemonHeight"
               className="w-full p-2 pl-2 pr-2 border-2 border-gray-800 rounded-md bg-transparent focus:outline focus:outline-offset-2 focus:outline-gray-800"
               required
-              placeholder="Your Pokemon Height in Inches"
+              placeholder="Your Pokemon Height in Fts"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
             />
