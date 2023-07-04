@@ -227,7 +227,7 @@ export default function PokemonDetailPage() {
       <section className="scrollBar relative w-full h-full bg-gray-100/90 p-4 flex flex-col gap-4 overflow-y-scroll xs:p-2">
         <section className="w-2/3 self-center flex flex-col items-center gap-4 sm:w-full">
           {/* name */}
-          <h1 className="pl-4 pr-4 text-center mb-4 border-t-8 border-l-8 border-r-8 border-gray-800 pt-4 rounded-3xl text-4xl font-bold sm:break-words w-full">
+          <h1 className="pl-4 pr-4 text-center border-t-8 border-l-8 border-r-8 border-gray-800 pt-4 rounded-3xl text-4xl font-bold sm:break-words w-full">
             {pokemonData.details.name.toUpperCase()}
           </h1>
 
