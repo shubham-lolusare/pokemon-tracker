@@ -277,7 +277,7 @@ export default function PokemonDetailPage() {
               <div className="w-full flex justify-evenly items-center gap-4 flex-col">
                 {/* height */}
                 <div className="bg-gray-800 text-white w-full text-center p-2 rounded-md">
-                  Height: {pokemonData.details.height};
+                  Height: {pokemonData.details.height}fts
                 </div>
 
                 {/* weight */}
