@@ -267,7 +267,9 @@ export default function PokemonDetailPage() {
             {/* pokemon details */}
             <div className="p-4 scrollBar w-[500px] h-[500px] bg-orange-500/30 rounded-lg flex flex-col gap-4 sm:w-[80%] mobile:w-full overflow-y-scroll sm:overflow-visible sm:h-max">
               {/* description */}
-              <p className="text-lg">{pokemonData.details.desc}</p>
+              <p className="text-lg w-full break-words">
+                {pokemonData.details.desc}
+              </p>
 
               {/* category */}
               <div className="bg-orange-500 p-2 rounded-md text-center font-bold">
